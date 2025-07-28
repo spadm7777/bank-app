@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>누락 거래 입력</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        label {
+            display: block;
+            margin: 15px 0 5px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            border-color: #0066cc;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            form {
+                padding: 15px;
+            }
+            
+            input, select {
+                padding: 12px;
+                font-size: 16px; /* 모바일에서 자동 확대 방지 */
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            form {
+                padding: 12px;
+            }
+            
+            input, select {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>누락된 거래 수동 입력</h2>
+    <form method="POST">
+        <label>시간 (YYYY-MM-DD HH:MM:SS): <input type="text" name="time" required></label><br><br>
+        <label>구분: 
+            <select name="type">
+                <option value="입금">입금</option>
+                <option value="출금">출금</option>
+            </select>
+        </label><br><br>
+        <label>금액: <input type="number" name="amount" required></label><br><br>
+        <label>잔액: <input type="number" name="balance" required></label><br><br>
+        <label>보낸사람: <input type="text" name="sender" required></label><br><br>
+        <button type="submit">등록</button>
+    </form>
+    <br>
+    <a href="/">← 거래내역으로 돌아가기</a>
+</body>
+</html>

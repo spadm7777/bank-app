@@ -1,0 +1,81 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 회원 생성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>관리자 회원 생성</h1>
+<form method="POST">
+    <label>아이디 (username)</label>
+    <input type="text" name="username" required>
+
+    <label>비밀번호</label>
+    <input type="password" name="password" required>
+
+    <label>회원 등급</label>
+    <select name="role">
+        <option value="관리자">관리자</option>
+        <option value="에이전시">에이전시</option>
+        <option value="총판">총판</option>
+        <option value="가맹점">가맹점</option>
+        <option value="매장">매장</option>
+    </select>
+
+    <button type="submit">생성</button>
+</form>
+<div class="back-link">
+    <a href="{{ url_for('index') }}">← 메인 페이지로 돌아가기</a>
+</div>
+</body>
+</html>

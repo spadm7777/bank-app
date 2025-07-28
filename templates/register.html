@@ -1,0 +1,215 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 회원 생성</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+            text-decoration: none;
+            color: white;
+        }
+        .register-form {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        .register-form h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .register-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #444;
+        }
+        .register-form input,
+        .register-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .register-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .register-form button:hover {
+            background-color: #0056b3;
+        }
+        .flash {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+        }
+        .link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .home-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .register-form {
+                width: 100%;
+                max-width: 350px;
+                padding: 25px 30px;
+                margin: 20px auto;
+            }
+            
+            .register-form h1 {
+                font-size: 20px;
+                margin-bottom: 18px;
+            }
+            
+            .register-form input,
+            .register-form select {
+                padding: 12px;
+                font-size: 16px; /* 모바일에서 자동 확대 방지 */
+                margin-bottom: 14px;
+            }
+            
+            .register-form button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .register-form {
+                padding: 20px 25px;
+                margin: 10px auto;
+            }
+            
+            .register-form h1 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+            
+            .register-form input,
+            .register-form select {
+                padding: 10px;
+                margin-bottom: 12px;
+            }
+            
+            .register-form button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="home-btn">🏠 메인페이지</a>
+    <form class="register-form" method="post">
+        <h1>관리자 회원 생성</h1>
+        <label for="username">아이디</label>
+        <input type="text" name="username" id="username" required>
+
+        <label for="password">비밀번호</label>
+        <input type="password" name="password" id="password" required>
+
+        <label for="role">회원등급</label>
+        <select name="role" id="role" required>
+            <option value="관리자">관리자</option>
+            <option value="에이전시">에이전시</option>
+            <option value="총판">총판</option>
+            <option value="가맹점" selected>가맹점</option>
+            <option value="매장">매장</option>
+        </select>
+
+        <button type="submit">등록</button>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash">
+                {% for msg in messages %}
+                <p>{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="link">
+            <a href="{{ url_for('auth.manage_users') }}">← 회원 목록으로</a>
+        </div>
+    </form>
+</body>
+</html>

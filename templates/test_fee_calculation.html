@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수수료 계산 테스트</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 1000px;
+            margin: auto;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+            text-decoration: none;
+            color: white;
+        }
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+        .test-info {
+            background-color: #e8f4fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #0066cc;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .fee-amount {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #004999;
+        }
+        .back-btn {
+            background-color: #6c757d;
+        }
+        .back-btn:hover {
+            background-color: #545b62;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .home-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .test-info {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            table {
+                font-size: 12px;
+                margin-top: 15px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+                margin: 8px 3px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .test-info {
+                padding: 12px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin: 5px 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="home-btn">🏠 메인페이지</a>
+    <h1>수수료 계산 테스트</h1>
+    
+    <div class="test-info">
+        <h3>테스트 설명</h3>
+        <p>이 페이지에서는 하위 매장들의 일일 총 입금액을 기준으로 수수료를 계산합니다.</p>
+        <p><strong>계산 대상:</strong> 관리자, 에이전시, 총판, 가맹점 등급의 사용자</p>
+        <p><strong>계산 방식:</strong> 하위 매장의 일일 총 입금액 × 수수료율</p>
+        {% if test_date %}
+        <p><strong>테스트 날짜:</strong> {{ test_date }}</p>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        <button type="submit" class="btn">수수료 계산 테스트 실행</button>
+    </form>
+
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>사용자명</th>
+                <th>등급</th>
+                <th>수수료율</th>
+                <th>계산된 수수료</th>
+                <th>하위 매장 상세</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.username }}</td>
+                <td>{{ result.role }}</td>
+                <td>{{ result.fee_rate }}%</td>
+                <td class="fee-amount">{{ "{:,}".format(result.daily_fee) }}원</td>
+                <td style="text-align: left;">
+                    {% if result.child_details %}
+                        {% for child in result.child_details %}
+                        <div style="margin-bottom: 5px; font-size: 12px;">
+                            <strong>{{ child.username }}</strong>: {{ "{:,}".format(child.daily_total) }}원 
+                            (수수료율: {{ child.fee_rate }}% → {{ "{:,}".format(child.child_fee) }}원)
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <span style="color: #999;">하위 매장 없음</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('index') }}" class="btn back-btn">메인으로 돌아가기</a>
+    </div>
+</body>
+</html> 

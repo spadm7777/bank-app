@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>거래 내역</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+        
+        h1, h2 {
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #0066cc;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h2 {
+                font-size: 1.1rem;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>전체 거래 내역</h1>
+    <a href="/income">입금 내역 보기</a> |
+    <a href="/expense">출금 내역 보기</a>
+    <hr>
+    <h2>날짜별 요약</h2>
+    <table border="1">
+        <tr>
+            <th>날짜</th><th>총 입금</th><th>총 출금</th><th>잔액</th>
+        </tr>
+        {% for row in totals %}
+        <tr>
+            <td>{{ row.date }}</td>
+            <td>{{ row.total_deposit }}</td>
+            <td>{{ row.total_withdrawal }}</td>
+            <td>{{ row.balance }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <h2>전체 거래</h2>
+    <table border="1">
+        <tr>
+            <th>날짜</th><th>이름</th><th>유형</th><th>금액</th><th>메모</th>
+        </tr>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.timestamp }}</td>
+            <td>{{ t.name }}</td>
+            <td>{{ t.type }}</td>
+            <td>{{ t.amount }}</td>
+            <td>{{ t.memo }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

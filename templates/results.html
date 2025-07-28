@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>검색 결과</title>
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f9f9;
+        max-width: 1200px;
+        margin: auto;
+        padding: 30px;
+    }
+    
+    h2 {
+        color: #0066cc;
+        text-align: center;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    
+    th {
+        background-color: #0066cc;
+        color: white;
+        font-weight: bold;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    /* 모바일 반응형 스타일 */
+    @media (max-width: 768px) {
+        body {
+            padding: 15px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        table {
+            font-size: 12px;
+        }
+        
+        th, td {
+            padding: 8px 6px;
+            font-size: 11px;
+        }
+        
+        /* 모바일에서 테이블 가로 스크롤 */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        body {
+            padding: 10px;
+        }
+        
+        h2 {
+            font-size: 1.3rem;
+        }
+        
+        table {
+            font-size: 11px;
+        }
+        
+        th, td {
+            padding: 6px 4px;
+            font-size: 10px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <h2>검색 결과</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>시간</th>
+        <th>구분</th>
+        <th>금액</th>
+        <th>잔액</th>
+        <th>보낸사람</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in transactions %}
+      <tr>
+        <td>{{ t.timestamp }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.amount }}</td>
+        <td>{{ t.balance }}</td>
+        <td>{{ t.sender }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="/">돌아가기</a>
+</body>
+</html>

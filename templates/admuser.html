@@ -1,0 +1,152 @@
+<!--templates/admuser.html-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자 회원 생성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 8px #ccc;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form > div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .flash-message {
+            margin-bottom: 15px;
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                margin: 20px auto;
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            
+            input[type="text"], input[type="password"] {
+                padding: 10px;
+                font-size: 16px; /* 모바일에서 자동 확대 방지 */
+            }
+            
+            button {
+                padding: 12px 0;
+                font-size: 16px;
+            }
+            
+            .flash-message {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                margin: 15px auto;
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+            
+            input[type="text"], input[type="password"] {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            button {
+                padding: 10px 0;
+                font-size: 14px;
+            }
+            
+            .flash-message {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>관리자 회원 생성</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-message">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <div>
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" required autocomplete="off" />
+        </div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required autocomplete="new-password" />
+        </div>
+        <button type="submit">계정 생성</button>
+    </form>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">← 메인 페이지로 돌아가기</a>
+    </div>
+</body>
+</html>

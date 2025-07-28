@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출금 내역</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #0066cc;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        div {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        p {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>출금 내역</h1>
+    <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>시간</th>
+                <th>금액</th>
+                <th>잔액</th>
+                <th>보낸사람</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if transactions %}
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.timestamp }}</td>
+                    <td>{{ "{:,}".format(t.amount) }}</td>
+                    <td>{{ "{:,}".format(t.balance) }}</td>
+                    <td>{{ t.sender }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4">조회된 출금 내역이 없습니다.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div>
+        {% if has_prev %}
+            <a href="?page={{ page - 1 }}&per_page={{ per_page }}">이전</a>
+        {% endif %}
+        페이지 {{ page }} / {{ total_pages }}
+        {% if has_next %}
+            <a href="?page={{ page + 1 }}&per_page={{ per_page }}">다음</a>
+        {% endif %}
+    </div>
+
+    <p><a href="/">요약 페이지로 돌아가기</a></p>
+</body>
+</html>

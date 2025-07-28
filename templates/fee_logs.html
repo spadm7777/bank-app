@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수수료 로그</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+            text-decoration: none;
+            color: white;
+        }
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+        .search-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .search-form h3 {
+            margin: 0 0 15px 0;
+            color: #0066cc;
+        }
+        .search-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-inputs label {
+            font-weight: bold;
+            color: #333;
+        }
+        .search-inputs input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+        .reset-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .home-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .search-form {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .search-inputs {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .search-inputs input[type="date"] {
+                padding: 10px 12px;
+                font-size: 16px; /* 모바일에서 자동 확대 방지 */
+            }
+            
+            .search-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .search-btn, .reset-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 출금신청 폼 모바일 최적화 */
+            form[action*="withdrawal_request"] {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            form[action*="withdrawal_request"] input[type="number"] {
+                width: 100%;
+                padding: 10px 12px;
+                font-size: 16px;
+            }
+            
+            form[action*="withdrawal_request"] button {
+                width: 100%;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .search-form {
+                padding: 12px;
+            }
+            
+            .search-inputs input[type="date"] {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            
+            .search-btn, .reset-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+                }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background-color: #0066cc;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .no-logs {
+            text-align: center;
+            margin-top: 50px;
+            color: #999;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #0066cc;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        .pagination a:hover {
+            background-color: #0066cc;
+            color: white;
+        }
+        .pagination .current {
+            background-color: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        .pagination .disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+        .pagination .disabled:hover {
+            background-color: #fff;
+            color: #999;
+        }
+        .page-info {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="home-btn">🏠 메인페이지</a>
+    <h1>수수료 거래내역</h1>
+    
+    <!-- 검색 폼 -->
+    <div class="search-form">
+        <h3>🔍 날짜 검색</h3>
+        <form method="GET" action="{{ url_for('fee_logs') }}">
+            <div class="search-inputs">
+                <div>
+                    <label for="start_date">시작일:</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+                </div>
+                <div>
+                    <label for="end_date">종료일:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+                </div>
+                <div class="search-buttons">
+                    <button type="submit" class="search-btn">🔍 검색</button>
+                    <button type="button" class="reset-btn" onclick="resetSearch()">🔄 초기화</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div style="margin-bottom: 20px; padding: 15px; background-color: #e8f4fd; border-radius: 5px;">
+        <h3 style="margin: 0 0 10px 0; color: #0066cc;">현재 잔액: {{ "{:,}".format(current_balance) }}원</h3>
+        <p style="margin: 0; color: #666; font-size: 14px;">
+            하위 매장들의 일일 총 입금액을 기준으로 계산된 수수료 내역입니다.
+        </p>
+        
+        <!-- 출금신청 폼 -->
+        <div style="margin-top: 15px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd;">
+            <h4 style="margin: 0 0 10px 0; color: #333;">💰 출금신청</h4>
+            <form method="POST" action="{{ url_for('withdrawal_request') }}" style="display: flex; gap: 10px; align-items: center;">
+                <label for="amount" style="font-weight: bold; color: #333;">신청금액:</label>
+                <input type="number" id="amount" name="amount" placeholder="금액 입력" 
+                       style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 150px;" required>
+                <button type="submit" style="padding: 8px 16px; background: linear-gradient(135deg, #28a745, #20c997); 
+                        color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    💸 신청
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if logs %}
+    <table>
+    <thead>
+        <tr>
+            <th style="width: 15%;">날짜/시간</th>
+            <th style="width: 10%;">구분</th>
+            <th style="width: 15%;">수수료 금액</th>
+            <th style="width: 15%;">잔액</th>
+            <th style="width: 45%;">상세 내역</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td style="color: #28a745; font-weight: bold;">{{ log.type }}</td>
+                <td style="color: #28a745; font-weight: bold;">{{ "{:,}".format(log.amount) }}원</td>
+                <td>{{ "{:,}".format(log.balance) }}원</td>
+                <td style="text-align: left; font-size: 13px; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ log.description }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    
+    <!-- 페이지네이션 -->
+    {% if pagination.pages > 1 %}
+    <div class="page-info">
+        총 {{ pagination.total }}개 중 {{ (pagination.page - 1) * pagination.per_page + 1 }} - {{ pagination.page * pagination.per_page if pagination.page * pagination.per_page < pagination.total else pagination.total }}개 표시
+    </div>
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('fee_logs', page=pagination.prev_num, start_date=start_date, end_date=end_date) }}">◀ 이전</a>
+        {% else %}
+            <span class="disabled">◀ 이전</span>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+            {% if page_num %}
+                {% if page_num != pagination.page %}
+                    <a href="{{ url_for('fee_logs', page=page_num, start_date=start_date, end_date=end_date) }}">{{ page_num }}</a>
+                {% else %}
+                    <span class="current">{{ page_num }}</span>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+            <a href="{{ url_for('fee_logs', page=pagination.next_num, start_date=start_date, end_date=end_date) }}">다음 ▶</a>
+        {% else %}
+            <span class="disabled">다음 ▶</span>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {% else %}
+        <p class="no-logs">수수료 거래내역이 없습니다.</p>
+    {% endif %}
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('index') }}" style="text-decoration: none; padding: 10px 20px; background-color: #0066cc; color: white; border-radius: 5px;">메인으로 돌아가기</a>
+    </div>
+    
+    <script>
+        function resetSearch() {
+            document.getElementById('start_date').value = '';
+            document.getElementById('end_date').value = '';
+            window.location.href = '{{ url_for("fee_logs") }}';
+        }
+    </script>
+</body>
+</html>

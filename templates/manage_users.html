@@ -1,0 +1,505 @@
+<!-- templates/manage_users.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>회원 등급 관리</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f7f9fc;
+            color: #333;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+            text-decoration: none;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        thead {
+            background-color: #0056b3;
+            color: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 6px 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        select:focus, input[type="text"]:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 2px;
+        }
+        button:hover {
+            background-color: #003d80;
+        }
+        .delete-button {
+            background-color: #dc3545;
+        }
+        .delete-button:hover {
+            background-color: #b02a37;
+        }
+        .balance-cell {
+            cursor: pointer;
+            color: #0056b3;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .balance-cell:hover {
+            color: #003d80;
+        }
+        .flash-message {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            padding: 10px 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .back-link a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        form {
+            margin: 0;
+        }
+        
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                margin: 15px auto;
+                padding: 15px;
+            }
+            
+            .home-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            select, input[type="text"] {
+                padding: 5px 6px;
+                font-size: 12px;
+            }
+            
+            button {
+                padding: 5px 8px;
+                font-size: 11px;
+                margin: 1px;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 5% auto;
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 16px;
+            }
+            
+            .form-group input, .form-group select, .form-group textarea {
+                padding: 6px 10px;
+                font-size: 16px; /* 모바일에서 자동 확대 방지 */
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                margin: 10px auto;
+                padding: 10px;
+            }
+            
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+            
+            select, input[type="text"] {
+                padding: 4px 5px;
+                font-size: 11px;
+            }
+            
+            button {
+                padding: 4px 6px;
+                font-size: 10px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+                padding: 15px;
+            }
+            
+            .modal-title {
+                font-size: 14px;
+            }
+        }
+        .btn-cancel {
+            background-color: #6c757d;
+        }
+        .btn-cancel:hover {
+            background-color: #545b62;
+        }
+        .btn-increase {
+            background-color: #28a745;
+        }
+        .btn-increase:hover {
+            background-color: #1e7e34;
+        }
+        .btn-decrease {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .btn-decrease:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="home-btn">🏠 메인페이지</a>
+    <h1>회원 등급 관리</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-message">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>아이디</th>
+                <th>회원등급</th>
+                <th>상위 계정</th>
+                <th>텔레그램 방</th>
+                <th>수수료율 (%)</th>
+                <th>수수료잔액</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <form method="POST">
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <select name="new_role" required>
+                            <option value="관리자" {% if user.role == '관리자' %}selected{% endif %}>관리자</option>
+                            <option value="에이전시" {% if user.role == '에이전시' %}selected{% endif %}>에이전시</option>
+                            <option value="총판" {% if user.role == '총판' %}selected{% endif %}>총판</option>
+                            <option value="가맹점" {% if user.role == '가맹점' %}selected{% endif %}>가맹점</option>
+                            <option value="매장" {% if user.role == '매장' %}selected{% endif %}>매장</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="parent_id">
+                            <option value="">없음</option>
+                            {% for parent_user in users %}
+                                {% if parent_user.id != user.id %}
+                                    <option value="{{ parent_user.id }}" {% if user.parent_id == parent_user.id %}selected{% endif %}>
+                                        {{ parent_user.username }} (ID: {{ parent_user.id }})
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="telegram_group" value="{{ user.telegram_group or '' }}" placeholder="텔레그램 방 ID" />
+                    </td>
+                    <td>
+                        <input type="text" name="fee_rate" value="{{ user.fee_rate or 0.5 }}" placeholder="0.5" />
+                    </td>
+                    <td>
+                        <div class="balance-cell" onclick="openBalanceModal({{ user.id }}, '{{ user.username }}', {{ user.fee_balance or 0 }})">
+                            {{ "{:,}".format(user.fee_balance or 0) }}원
+                        </div>
+                    </td>
+                    <td>
+                        <input type="hidden" name="user_id" value="{{ user.id }}" />
+                        <button type="submit">변경</button>
+                        {% if user.username != 'admin' %}
+                        <button type="button" class="delete-button" onclick="deleteUser({{ user.id }}, '{{ user.username }}')">삭제</button>
+                        {% endif %}
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 수수료잔액 관리 모달 -->
+    <div id="balanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">수수료잔액 관리</span>
+                <span class="close" onclick="closeBalanceModal()">&times;</span>
+            </div>
+            <form id="balanceForm" method="POST" action="{{ url_for('auth.manage_fee_balance') }}">
+                <input type="hidden" id="modalUserId" name="user_id" value="">
+                <div class="form-group">
+                    <label>회원: <span id="modalUsername"></span></label>
+                </div>
+                <div class="form-group">
+                    <label>현재 잔액: <span id="modalCurrentBalance"></span>원</label>
+                </div>
+                <div class="form-group">
+                    <label for="operation">작업 유형:</label>
+                    <select id="operation" name="operation" required>
+                        <option value="increase">증가</option>
+                        <option value="decrease">차감</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">금액:</label>
+                    <input type="number" id="amount" name="amount" min="1" required placeholder="금액을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="note">비고:</label>
+                    <textarea id="note" name="note" placeholder="비고를 입력하세요"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" onclick="closeBalanceModal()">취소</button>
+                    <button type="submit" class="btn-increase" id="submitBtn">증가</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">← 메인 페이지로 돌아가기</a>
+    </div>
+
+    <script>
+        function openBalanceModal(userId, username, currentBalance) {
+            document.getElementById('modalUserId').value = userId;
+            document.getElementById('modalUsername').textContent = username;
+            document.getElementById('modalCurrentBalance').textContent = currentBalance.toLocaleString();
+            document.getElementById('balanceModal').style.display = 'block';
+        }
+
+        function closeBalanceModal() {
+            document.getElementById('balanceModal').style.display = 'none';
+        }
+
+        function deleteUser(userId, username) {
+            if (confirm(`정말 ${username}을(를) 삭제하시겠습니까?`)) {
+                fetch(`/delete_user/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('삭제 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+        }
+
+        // 작업 유형 변경 시 버튼 텍스트 변경
+        document.getElementById('operation').addEventListener('change', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            if (this.value === 'increase') {
+                submitBtn.textContent = '증가';
+                submitBtn.className = 'btn-increase';
+            } else {
+                submitBtn.textContent = '차감';
+                submitBtn.className = 'btn-decrease';
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('balanceModal');
+            if (event.target === modal) {
+                closeBalanceModal();
+            }
+        }
+    </script>
+</body>
+</html>

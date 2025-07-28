@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>누락된 수수료 로그 기록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="my-4">누락된 수수료 로그 기록</h1>
+    <p>관리자만 접근 가능합니다.</p>
+
+    <form method="post" action="{{ url_for('manual_record_logs') }}">
+        <button type="submit" class="btn btn-primary">누락된 수수료 로그 기록하기</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info mt-3">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">돌아가기</a>
+</div>
+
+</body>
+</html>

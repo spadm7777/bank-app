@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>환전신청 관리</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            max-width: 1400px;
+            margin: auto;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+            text-decoration: none;
+            color: white;
+        }
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background-color: #0066cc;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .approve-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .approve-btn:hover {
+            background: linear-gradient(135deg, #20c997, #17a2b8);
+        }
+        .reject-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .reject-btn:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+        }
+        .no-requests {
+            text-align: center;
+            margin-top: 50px;
+            color: #999;
+        }
+        .request-info {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        /* 모바일 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .home-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            table {
+                font-size: 12px;
+                margin-top: 15px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+                font-size: 11px;
+            }
+            
+            .approve-btn, .reject-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+                margin: 1px;
+            }
+            
+            .filter-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-bottom: 15px;
+            }
+            
+            .filter-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            /* 모바일에서 테이블 가로 스크롤 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 모바일에서 처리 버튼 세로 배치 */
+            form[action*="process_withdrawal"] {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            form[action*="process_withdrawal"] button {
+                width: 100%;
+                margin: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 6px 3px;
+                font-size: 10px;
+            }
+            
+            .approve-btn, .reject-btn {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+            
+            .filter-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .processed-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .filter-buttons {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .filter-btn.active {
+            background-color: #0066cc;
+            color: white;
+        }
+        .filter-btn:not(.active) {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="home-btn">🏠 메인페이지</a>
+    <h1>💱 환전신청 관리</h1>
+    
+    <div class="request-info">
+        <h3 style="margin: 0 0 10px 0; color: #0066cc;">환전신청 내역 (최근 50건)</h3>
+        <p style="margin: 0; color: #666; font-size: 14px;">
+            회원들의 출금신청을 승인하거나 거절할 수 있습니다. 처리된 내역도 함께 표시됩니다.
+        </p>
+    </div>
+    
+    <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterRequests('all')">전체</button>
+        <button class="filter-btn" onclick="filterRequests('pending')">대기중</button>
+        <button class="filter-btn" onclick="filterRequests('approved')">승인완료</button>
+        <button class="filter-btn" onclick="filterRequests('rejected')">거절완료</button>
+    </div>
+    
+    {% if requests %}
+    <table>
+    <thead>
+        <tr>
+            <th>신청일시</th>
+            <th>회원아이디</th>
+            <th>신청금액</th>
+            <th>신청시잔액</th>
+            <th>상태</th>
+            <th>처리일시</th>
+            <th>처리자</th>
+            <th>처리</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+            <tr class="request-row" data-status="{{ request.status }}">
+                <td>{{ request.timestamp.strftime('%Y.%m.%d %H:%M') }}</td>
+                <td>{{ request.user.username }}</td>
+                <td style="color: #dc3545; font-weight: bold;">{{ "{:,}".format(request.amount) }}원</td>
+                <td>{{ "{:,}".format(request.current_balance) }}원</td>
+                <td>
+                    {% if request.status == 'pending' %}
+                        <span class="status-pending">대기중</span>
+                    {% elif request.status == 'approved' %}
+                        <span class="status-approved">승인완료</span>
+                    {% elif request.status == 'rejected' %}
+                        <span class="status-rejected">거절완료</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request.processed_at %}
+                        {{ request.processed_at.strftime('%Y.%m.%d %H:%M') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ request.processor_name }}</td>
+                <td>
+                    {% if request.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('process_withdrawal', request_id=request.id) }}" style="display: inline;">
+                            <button type="submit" name="action" value="approve" class="approve-btn">✅ 승인</button>
+                            <button type="submit" name="action" value="reject" class="reject-btn">❌ 거절</button>
+                        </form>
+                    {% else %}
+                        <span style="color: #666; font-size: 12px;">
+                            {% if request.status == 'approved' %}
+                                ✅ 처리완료
+                            {% else %}
+                                ❌ 처리완료
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    {% else %}
+        <p class="no-requests">환전신청 내역이 없습니다.</p>
+    {% endif %}
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('index') }}" style="text-decoration: none; padding: 10px 20px; background-color: #0066cc; color: white; border-radius: 5px;">메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function filterRequests(status) {
+            const rows = document.querySelectorAll('.request-row');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // 버튼 활성화 상태 변경
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 행 필터링
+            rows.forEach(row => {
+                const rowStatus = row.getAttribute('data-status');
+                if (status === 'all' || rowStatus === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

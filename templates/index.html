@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스타페이</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: auto;
+        padding: 10px;
+        background: #f9f9f9;
+        font-size: 14px;
+    }
+    
+    h1, h2 {
+        text-align: center;
+        margin: 15px 0;
+        color: #0066cc;
+        font-size: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .filter-stats-table, table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        font-size: 12px;
+    }
+    
+    .filter-stats-table td, th, td {
+        padding: 8px 4px;
+        border: 1px solid #ddd;
+        text-align: center;
+        word-break: break-all;
+    }
+    
+    th {
+        background-color: #0066cc;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .type-deposit { color: #007bff !important; font-weight: bold; }
+    .type-withdraw { color: #d9534f !important; font-weight: bold; }
+    
+    input[type="text"], input[type="date"], select {
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    button {
+        padding: 10px 16px;
+        font-size: 13px;
+        border-radius: 8px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        margin: 3px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    
+    button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    button#excel-btn { 
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: 1px solid #28a745;
+    }
+    button#excel-btn:hover { 
+        background: linear-gradient(135deg, #20c997, #17a2b8);
+        border-color: #20c997;
+    }
+    
+    button.search-btn { 
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: 1px solid #007bff;
+    }
+    button.search-btn:hover { 
+        background: linear-gradient(135deg, #0056b3, #004085);
+        border-color: #0056b3;
+    }
+    
+    button.all-btn { 
+        background: linear-gradient(135deg, #ffc107, #ff8f00);
+        border: 1px solid #ffc107;
+        color: #212529;
+    }
+    button.all-btn:hover { 
+        background: linear-gradient(135deg, #ff8f00, #ff6f00);
+        border-color: #ff8f00;
+        color: white;
+    }
+    
+    button.deposit-btn { 
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: 1px solid #28a745;
+    }
+    button.deposit-btn:hover { 
+        background: linear-gradient(135deg, #20c997, #17a2b8);
+        border-color: #20c997;
+    }
+    
+    button.withdraw-btn { 
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        border: 1px solid #dc3545;
+    }
+    button.withdraw-btn:hover { 
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        border-color: #c82333;
+    }
+    
+    button.date-btn {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        border: 1px solid #6c757d;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    button.date-btn:hover {
+        background: linear-gradient(135deg, #5a6268, #495057);
+        border-color: #5a6268;
+    }
+    
+    button.reset-btn {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        border: 1px solid #6c757d;
+    }
+    
+    button.reset-btn:hover {
+        background: linear-gradient(135deg, #5a6268, #495057);
+        border-color: #5a6268;
+    }
+    
+    .tree-btn {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        border: 1px solid #17a2b8;
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+    
+    .tree-btn:hover {
+        background: linear-gradient(135deg, #138496, #117a8b);
+        border-color: #138496;
+    }
+    
+    .admin-btn {
+        background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        border: 1px solid #6f42c1;
+        padding: 8px 16px;
+        font-size: 12px;
+        text-decoration: none;
+        display: inline-block;
+        margin: 2px;
+    }
+    
+    .admin-btn:hover {
+        background: linear-gradient(135deg, #5a32a3, #4c2a8a);
+        border-color: #5a32a3;
+        text-decoration: none;
+        color: white;
+    }
+    
+    .admin-btn.blink {
+        animation: blink 2s infinite;
+    }
+    
+    .request-count {
+        background: #ff4757;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 10px;
+        margin-left: 5px;
+    }
+    
+    /* 모바일 반응형 스타일 */
+    @media (max-width: 768px) {
+        body {
+            padding: 5px;
+            font-size: 12px;
+        }
+        
+        h1 {
+            font-size: 1.4rem;
+            margin: 10px 0;
+        }
+        
+        h2 {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+        
+        .filter-stats-table, table {
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-stats-table td, th, td {
+            padding: 4px 2px;
+            font-size: 9px;
+        }
+        
+        input[type="text"], input[type="date"], select {
+            padding: 6px;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        
+        button {
+            padding: 8px 12px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        
+        button.date-btn {
+            padding: 4px 8px;
+            font-size: 9px;
+        }
+        
+        .tree-btn {
+            padding: 6px 10px;
+            font-size: 10px;
+        }
+        
+        .admin-btn {
+            padding: 6px 12px;
+            font-size: 10px;
+            margin: 1px;
+        }
+        
+        .request-count {
+            font-size: 8px;
+            padding: 1px 4px;
+        }
+        
+        /* 모바일에서 테이블 가로 스크롤 */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 모바일에서 버튼 그룹 정렬 */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+        }
+        
+        /* 모바일에서 필터 영역 */
+        .filter-section {
+            margin-bottom: 10px;
+        }
+        
+        .filter-section input,
+        .filter-section select {
+            margin-bottom: 5px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        body {
+            padding: 3px;
+            font-size: 11px;
+        }
+        
+        h1 {
+            font-size: 1.2rem;
+        }
+        
+        h2 {
+            font-size: 1rem;
+        }
+        
+        .filter-stats-table, table {
+            font-size: 9px;
+        }
+        
+        .filter-stats-table td, th, td {
+            padding: 3px 1px;
+            font-size: 8px;
+        }
+        
+        button {
+            padding: 6px 10px;
+            font-size: 10px;
+        }
+        
+        input[type="text"], input[type="date"], select {
+            padding: 5px;
+            font-size: 11px;
+        }
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.5; }
+    }
+    
+    .stats {
+        font-weight: bold;
+        font-size: 12px;
+        text-align: center;
+        line-height: 1.4;
+    }
+    
+    .stats .deposit { color: #007bff; }
+    .stats .withdraw { color: #d9534f; }
+    .stats .fee { color: #ff8800; }
+    .stats .balance { color: #2e7d32; }
+    
+    .pagination {
+        text-align: center;
+        margin: 10px 0;
+    }
+    
+    .pagination a {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        margin: 0 1px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+        font-size: 12px;
+    }
+    
+    .pagination a.current {
+        background-color: #0066cc;
+        color: white;
+    }
+    
+    .tree-btn { 
+        font-size: 12px; 
+        font-weight: bold;
+        margin: 2px;
+    }
+    
+    .tree-expand { background: #007bff; }
+    .tree-expand:hover { background: #004999; }
+    .tree-collapse { background: #d9534f; }
+    .tree-collapse:hover { background: #b02a21; }
+    
+    .fee-btn { 
+        background-color: #ff8800 !important; 
+        color: white !important;
+        font-weight: bold;
+    }
+    .fee-btn:hover { 
+        background-color: #cc6c00 !important; 
+    }
+    
+    .date-btn {
+        background-color: #6c757d;
+        font-size: 10px;
+        padding: 4px 6px;
+        margin: 1px;
+    }
+    .date-btn:hover {
+        background-color: #545b62;
+    }
+    
+    .reset-btn {
+        background-color: #dc3545;
+        margin: 1px;
+    }
+    .reset-btn:hover {
+        background-color: #c82333;
+    }
+
+    /* 관리자바(메뉴) */
+    .admin-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        font-size: 12px;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+    
+    .admin-bar .admin-username {
+        font-weight: bold;
+        color: #0066cc;
+        margin-right: 5px;
+    }
+    
+    .admin-bar .admin-btn {
+        background: #0066cc;
+        color: #fff;
+        border-radius: 5px;
+        padding: 6px 10px;
+        text-decoration: none;
+        transition: background 0.18s;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border: none;
+        outline: none;
+        display: inline-block;
+        font-size: 11px;
+        margin: 2px;
+    }
+    
+    .admin-bar .admin-btn.logout {
+        background: #d9534f;
+    }
+    
+    .admin-bar .admin-btn:hover {
+        background: #004999;
+    }
+    
+    .admin-bar .admin-btn.logout:hover {
+        background: #b02a21;
+    }
+    
+    /* 검색 영역 */
+    .search-section {
+        text-align: center;
+        margin: 15px 0;
+    }
+    
+    .search-section form {
+        display: inline-block;
+        margin: 5px;
+    }
+    
+    .search-section input[type="text"] {
+        width: 120px;
+        margin: 0 5px;
+    }
+    
+    /* 필터 테이블 반응형 */
+    .filter-row {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .filter-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .refresh-btn {
+        background: linear-gradient(135deg, #9C27B0, #673AB7);
+        color: white;
+        border: 1px solid #9C27B0;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        margin-left: 5px;
+        box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+    }
+    
+    .refresh-btn:hover {
+        background: linear-gradient(135deg, #8E24AA, #5E35B1);
+        border-color: #8E24AA;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+    }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        body {
+            padding: 5px;
+            font-size: 12px;
+        }
+        
+        h1 {
+            font-size: 1.4rem;
+        }
+        
+        h2 {
+            font-size: 1.2rem;
+        }
+        
+        .filter-stats-table, table {
+            font-size: 10px;
+        }
+        
+        .filter-stats-table td, th, td {
+            padding: 4px 2px;
+        }
+        
+        input[type="text"], input[type="date"], select {
+            font-size: 12px;
+            padding: 6px;
+        }
+        
+        button {
+            font-size: 10px;
+            padding: 6px 8px;
+        }
+        
+        .refresh-btn {
+            font-size: 10px;
+            padding: 6px 8px;
+        }
+        
+        .admin-bar {
+            font-size: 10px;
+            gap: 4px;
+        }
+        
+        .admin-bar .admin-btn {
+            font-size: 9px;
+            padding: 4px 6px;
+        }
+        
+        .stats {
+            font-size: 10px;
+        }
+        
+        .pagination a {
+            font-size: 10px;
+            padding: 4px 6px;
+        }
+        
+        /* 테이블 스크롤 */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 거래내역 테이블 모바일 최적화 */
+        .transaction-table {
+            min-width: 600px;
+        }
+        
+        .transaction-table th,
+        .transaction-table td {
+            min-width: 80px;
+        }
+        
+        .transaction-table th:nth-child(1),
+        .transaction-table td:nth-child(1) {
+            min-width: 120px;
+        }
+        
+        .transaction-table th:nth-child(5),
+        .transaction-table td:nth-child(5) {
+            min-width: 100px;
+        }
+        
+
+    }
+    
+    @media (max-width: 480px) {
+        body {
+            padding: 3px;
+            font-size: 11px;
+        }
+        
+        h1 {
+            font-size: 1.2rem;
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+        }
+        
+        .filter-stats-table, table {
+            font-size: 9px;
+        }
+        
+        .filter-stats-table td, th, td {
+            padding: 3px 1px;
+        }
+        
+        button {
+            font-size: 9px;
+            padding: 4px 6px;
+        }
+        
+        .refresh-btn {
+            font-size: 9px;
+            padding: 4px 6px;
+        }
+        
+        .admin-bar .admin-btn {
+            font-size: 8px;
+            padding: 3px 5px;
+        }
+        
+        .stats {
+            font-size: 9px;
+        }
+    }
+</style>
+</head>
+<body>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color: red; text-align: center; font-size: 12px;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<!-- 관리자/로그인 메뉴 영역 -->
+<div class="admin-bar">
+  {% if current_user.is_authenticated %}
+    <span>안녕하세요 <span id="userId" class="admin-username">{{ current_user.username }}</span> 님</span>
+    <a href="{{ url_for('auth.logout') }}" class="admin-btn logout">로그아웃</a>
+    <a href="{{ url_for('fee_logs') }}" class="admin-btn fee-btn">💰 수수료</a>
+                {% if current_user.username == 'admin' %}
+                <a href="{{ url_for('exchange_requests') }}" class="admin-btn {% if pending_requests_count > 0 %}blink{% endif %}" 
+                   onclick="stopAlarm()" id="exchangeBtn">
+                    💱 환전신청
+                    {% if pending_requests_count > 0 %}
+                        <span class="request-count">({{ pending_requests_count }})</span>
+                    {% endif %}
+                </a>
+                <button type="button" class="admin-btn" onclick="testAlarm()" style="margin-left: 5px;">
+                    🔊 알림음 테스트
+                </button>
+            {% endif %}
+    {% if current_user.username == 'admin' %}
+              <a href="{{ url_for('auth.register') }}" class="admin-btn">➕ 회원생성</a>
+              <a href="{{ url_for('auth.manage_users') }}" class="admin-btn">👥 등급관리</a>
+        <a href="{{ url_for('admin.manual_edit') }}" class="admin-btn">✏️ 누락수정</a>
+      <a href="{{ url_for('admin.delete_duplicates') }}" class="admin-btn">🗑️ 중복삭제</a>
+    {% endif %}
+  {% else %}
+          <a href="{{ url_for('auth.login') }}" class="admin-btn">🔐 로그인</a>
+  {% endif %}
+</div>
+
+{% if current_user.role != '매장' %}
+<div class="search-section">
+  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; justify-content: center;">
+    <h2 style="margin: 0; font-size: 1.5rem;">하위 회원 목록</h2>
+    <button type="button" class="tree-btn tree-expand" onclick="expandTreeAll()">📂 전체 펼치기</button>
+    <button type="button" class="tree-btn tree-collapse" onclick="collapseTreeAll()">📁 전체 접기</button>
+    <form method="get" style="display: flex; align-items: center; gap: 5px; margin: 0;">
+        <input type="text" name="search_user" placeholder="가맹점아이디" value="{{ search_user|default('') }}" style="width: 150px; margin: 0;">
+        <button type="submit" class="search-btn">🔍 검색</button>
+        {% if search_user %}
+            <a href="{{ url_for('index') }}" style="color: #0066cc; text-decoration: none;">검색 초기화</a>
+        {% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>가맹점명</th>
+<th>금일 입금</th>
+<th>금일 출금</th>
+<th>금일 수수료</th>
+<th>누적 수수료</th>
+</tr>
+</thead>
+<tbody>
+  {% for su in children_info %}
+    <tr>
+      <td style="cursor:pointer; color:#0066cc; text-decoration:underline; font-weight:bold; padding-left:{{ su.depth * 16 }}px;"
+        onclick="toggleTree({{ su.id }})">
+        {{ su.role }}
+      </td>
+      <td>
+        {% if su.role == '매장' and current_user.role in ['에이전시', '총판', '가맹점'] %}
+          <span style="color: #999; cursor: not-allowed;" title="매장의 거래내역을 볼 권한이 없습니다">
+            {{ su.username }}
+          </span>
+        {% else %}
+          <a href="{{ url_for('index', user_id=su.id, start_date=start_date, end_date=end_date, opened=opened) }}">
+            {{ su.username }}
+          </a>
+        {% endif %}
+      </td>
+      <td>{{ "{:,}".format(su.deposit) }}</td>
+      <td>{{ "{:,}".format(su.withdraw) }}</td>
+      {% if current_user.username == 'admin' %}
+        <td>{{ "{:,}".format(su.daily_fee) }}</td>
+        <td>{{ "{:,}".format(su.total_fee) }}</td>
+      {% else %}
+        <td>{{ "{:,}".format(su.daily_fee) if su.id == current_user.id else '.' }}</td>
+        <td>{{ "{:,}".format(su.total_fee) if su.id == current_user.id else '.' }}</td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% endif %}
+
+{% if current_user.role not in ['에이전시', '총판', '가맹점'] %}
+<h1>({{ view_username }}) 거래내역</h1>
+<form method="get">
+<table class="filter-stats-table">
+<tr>
+<td>
+  <strong>시작일:</strong> <input name="start_date" type="date" value="{{ start_date }}" style="width: 120px;"/>
+  <button type="button" onclick="setDate('start_date', 'yesterday')" class="date-btn">전일</button>
+  <button type="button" onclick="setDate('start_date', 'today')" class="date-btn">금일</button>
+</td>
+<td>
+  <strong>종료일:</strong> <input name="end_date" type="date" value="{{ end_date }}" style="width: 120px;"/>
+  <button type="button" onclick="setDate('end_date', 'yesterday')" class="date-btn">전일</button>
+  <button type="button" onclick="setDate('end_date', 'today')" class="date-btn">금일</button>
+</td>
+<td style="border-right: 1px solid #ddd;">
+  <strong>보낸사람 or 금액:</strong> <input name="keyword" placeholder="이름 or 10000" type="text" value="{{ keyword }}" style="width: 150px;"/>
+  <button type="submit" class="search-btn">🔍 검색</button>
+  <button type="button" onclick="resetForm()" class="reset-btn">🔄 초기화</button>
+</td>
+<td style="border: none; border-right: none;">
+  <input name="user_id" type="hidden" value="{{ request.args.get('user_id', '') }}"/>
+  <input name="opened" type="hidden" value="{{ opened }}">
+</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align:center;">
+  <button class="all-btn{% if trans_filter=='전체' %} selected{% endif %}" name="trans_filter" type="submit" value="전체">📋 전체</button>
+  <button class="deposit-btn{% if trans_filter=='입금' %} selected{% endif %}" name="trans_filter" type="submit" value="입금">💰 입금</button>
+  <button class="withdraw-btn{% if trans_filter=='출금' %} selected{% endif %}" name="trans_filter" type="submit" value="출금">💸 출금</button>
+  <button type="button" onclick="refreshPage()" class="refresh-btn">🔄 새로고침</button>
+  <button id="excel-btn" name="download" type="submit" value="excel">📊 엑셀 다운로드</button>
+</td>
+</tr>
+<tr>
+<td class="stats" colspan="4">
+  총 입금액: <span class="deposit">{{ "{:,}".format(total_deposit) }} 원</span> &nbsp;&nbsp;&nbsp;&nbsp;
+  총 출금액: <span class="withdraw">{{ "{:,}".format(total_withdraw) }} 원</span> &nbsp;&nbsp;&nbsp;&nbsp;
+  총 수수료 ({{ fee_rate }}%): <span class="fee">{{ "{:,}".format(total_fee) }} 원</span>
+</td>
+</tr>
+<tr>
+<td class="stats" colspan="4">
+  최근 1시간 입금액: <span class="deposit">{{ "{:,}".format(recent_hour_deposit) }} 원</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  현재 잔액: <span class="withdraw">{{ "{:,}".format(current_balance) }} 원</span> &nbsp;&nbsp;&nbsp;&nbsp;
+  출금가능금액: <span class="fee">{{ "{:,}".format(current_balance - recent_hour_deposit) }} 원</span>
+</td>
+</tr>
+<tr>
+<td style="border: none; height: 1px; background-color: #ddd;" colspan="4"></td>
+</tr>
+</table>
+</form>
+
+<div class="table-container">
+<table class="transaction-table">
+<thead>
+<tr>
+<th>시간</th>
+<th>구분</th>
+<th>금액</th>
+<th>예상잔액</th>
+<th>알림잔액</th>
+<th>오차</th>
+<th>보낸사람</th>
+</tr>
+</thead>
+<tbody>
+  {% for t in transactions %}
+    <tr>
+      <td>{{ t.timestamp.strftime('%m-%d %H:%M') if t.timestamp else t.timestamp }}</td>
+      <td class="type-{% if t.type == '입금' %}deposit{% else %}withdraw{% endif %}">{{ t.type }}</td>
+      <td>{{ "{:,}".format(t.amount) }}</td>
+      <td>{{ "{:,}".format(t.expected_balance) }}</td>
+      <td>{{ "{:,}".format(t.notification_balance) if t.notification_balance else '-' }}</td>
+      <td>
+        {% if t.notification_balance %}
+          {% set diff = t.expected_balance - t.notification_balance %}
+          {% if diff != 0 %}
+            <span style="color: {% if diff > 0 %}red{% else %}blue{% endif %}; font-weight: bold;">
+              {{ "{:+,}".format(diff) }}
+            </span>
+          {% else %}
+            <span style="color: green;">0</span>
+          {% endif %}
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      <td>{{ t.sender }}</td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('index', page=1, user_id=request.args.get('user_id'), start_date=start_date, end_date=end_date, trans_filter=trans_filter, keyword=keyword, opened=opened) }}">처음</a>
+        <a href="{{ url_for('index', page=page-1, user_id=request.args.get('user_id'), start_date=start_date, end_date=end_date, trans_filter=trans_filter, keyword=keyword, opened=opened) }}">이전</a>
+    {% endif %}
+
+    {% for p in page_links %}
+        <a class="{% if p == page %}current{% endif %}" href="{{ url_for('index', page=p, user_id=request.args.get('user_id'), start_date=start_date, end_date=end_date, trans_filter=trans_filter, keyword=keyword, opened=opened) }}">{{ p }}</a>
+    {% endfor %}
+
+    {% if page < max_page %}
+        <a href="{{ url_for('index', page=page+1, user_id=request.args.get('user_id'), start_date=start_date, end_date=end_date, trans_filter=trans_filter, keyword=keyword, opened=opened) }}">다음</a>
+        <a href="{{ url_for('index', page=max_page, user_id=request.args.get('user_id'), start_date=start_date, end_date=end_date, trans_filter=trans_filter, keyword=keyword, opened=opened) }}">끝</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- 비밀번호 변경 모달 -->
+<div id="pwModal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:999;">
+  <div id="pwModalInner" style="background:white; padding:20px; width:90%; max-width:300px; margin:120px auto; border-radius:16px; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+    <h3>비밀번호 변경</h3>
+    <form action="{{ url_for('auth.change_password') }}" id="changePwForm" method="post" autocomplete="off">
+      <input id="currentPw" name="current_password" placeholder="현재 비밀번호" required style="width:100%;margin-bottom:10px;" type="password"/><br/>
+      <input id="newPw" name="new_password" placeholder="새 비밀번호" required style="width:100%;margin-bottom:10px;" type="password"/><br/>
+      <input id="confirmPw" name="confirm_password" placeholder="새 비밀번호 확인" required style="width:100%;margin-bottom:10px;" type="password"/><br/>
+      <div id="pwErrMsg" style="color:red; font-size:13px; display:none; margin-bottom:5px;"></div>
+      <button style="width:100%;background:#0066cc;color:white;padding:8px;border:none;border-radius:8px;" type="submit">변경</button>
+      <button onclick="closeModal()" style="width:100%;margin-top:8px;" type="button">취소</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleTree(nodeId) {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    let opened = params.get("opened") || "";
+    let openedArr = opened ? opened.split(",").filter(Boolean) : [];
+    let idx = openedArr.indexOf(String(nodeId));
+    if (idx === -1) {
+      openedArr.push(String(nodeId));
+    } else {
+      openedArr.splice(idx, 1);
+    }
+    params.set("opened", openedArr.join(","));
+    params.delete("parent_id");
+    url.search = params.toString();
+    window.location.href = url.toString();
+  }
+  
+  function expandTreeAll() {
+    var all_ids = {{ all_tree_ids|tojson }};
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    params.set("opened", all_ids.join(","));
+    params.delete("parent_id");
+    url.search = params.toString();
+    window.location.href = url.toString();
+  }
+  
+  function collapseTreeAll() {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    params.set("opened", "");
+    params.delete("parent_id");
+    url.search = params.toString();
+    window.location.href = url.toString();
+  }
+
+  document.getElementById("userId")?.addEventListener("click", function(){
+    document.getElementById("currentPw").value = "";
+    document.getElementById("newPw").value = "";
+    document.getElementById("confirmPw").value = "";
+    document.getElementById("pwErrMsg").style.display = "none";
+    document.getElementById("pwModal").style.display = "block";
+    setTimeout(()=>{ document.getElementById("currentPw").focus(); }, 100);
+  });
+  
+  function closeModal(){
+    document.getElementById("pwModal").style.display = "none";
+  }
+  
+  document.getElementById("pwModal").addEventListener("click", function(e){
+    if(e.target === this) closeModal();
+  });
+  
+  document.getElementById("changePwForm").addEventListener("submit", function(e){
+    var newPw = document.getElementById("newPw").value;
+    var confirmPw = document.getElementById("confirmPw").value;
+    if(newPw !== confirmPw){
+      document.getElementById("pwErrMsg").innerText = "새 비밀번호가 일치하지 않습니다.";
+      document.getElementById("pwErrMsg").style.display = "block";
+      document.getElementById("confirmPw").focus();
+      e.preventDefault();
+    }
+  });
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      closeModal();
+    {% endif %}
+  {% endwith %}
+  
+  function setDate(fieldName, type) {
+    const today = new Date();
+    let targetDate;
+    
+    if (type === 'today') {
+      targetDate = today;
+    } else if (type === 'yesterday') {
+      targetDate = new Date(today);
+      targetDate.setDate(today.getDate() - 1);
+    }
+    
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    
+    document.querySelector(`input[name="${fieldName}"]`).value = dateString;
+  }
+  
+  function resetForm() {
+    // 오늘 날짜 설정
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayString = `${year}-${month}-${day}`;
+    
+    document.querySelector('input[name="start_date"]').value = todayString;
+    document.querySelector('input[name="end_date"]').value = todayString;
+    document.querySelector('input[name="keyword"]').value = '';
+    
+    const filterButtons = document.querySelectorAll('button[name="trans_filter"]');
+    filterButtons.forEach(btn => {
+      btn.classList.remove('selected');
+      if (btn.value === '전체') {
+        btn.classList.add('selected');
+      }
+    });
+    
+    // 현재 URL에서 user_id 파라미터 유지
+    const url = new URL(window.location.href);
+    const currentUserId = url.searchParams.get('user_id');
+    
+    // 폼 제출 대신 URL 파라미터로 리다이렉트
+    const params = new URLSearchParams();
+    params.set('start_date', todayString);
+    params.set('end_date', todayString);
+    params.set('trans_filter', '전체');
+    if (currentUserId) {
+      params.set('user_id', currentUserId);
+    }
+    
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+  }
+  
+  function refreshPage() {
+    window.location.reload();
+  }
+  
+  // 알림음 관련 변수
+  let alarmAudio = null;
+  let alarmInterval = null;
+  
+  // 알림음 재생 함수 (개선된 버전)
+  function playAlarm() {
+    try {
+      console.log('알림음 재생 시도...');
+      
+      // 방법 1: 브라우저 내장 알림음 사용
+      if (window.Notification && Notification.permission === 'granted') {
+        new Notification('환전신청 알림', {
+          body: '새로운 환전신청이 있습니다!',
+          icon: '/static/favicon.ico'
+        });
+      }
+      
+      // 방법 2: Web Audio API 사용 (더 간단한 버전)
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // AudioContext가 suspended 상태면 resume
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime); // 볼륨 20%로 낮춤
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+        
+        console.log('Web Audio API 알림음 재생 성공');
+      } catch (audioError) {
+        console.log('Web Audio API 실패:', audioError);
+        
+        // 방법 3: 간단한 비프음 (브라우저 내장)
+        try {
+          const beep = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+          beep.play().catch(e => console.log('내장 비프음 실패:', e));
+        } catch (beepError) {
+          console.log('내장 비프음 실패:', beepError);
+        }
+      }
+      
+    } catch (e) {
+      console.log('알림음 재생 실패:', e);
+    }
+  }
+  
+  // 알림음 시작 함수 (반복 재생)
+  function startAlarm() {
+    if (!alarmStarted) {
+      alarmStarted = true;
+      playAlarm();
+      alarmInterval = setInterval(playAlarm, 5000);
+    }
+  }
+  
+  // 알림음 정지 함수
+  function stopAlarm() {
+    if (alarmAudio) {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+    }
+    if (alarmInterval) {
+      clearInterval(alarmInterval);
+      alarmInterval = null;
+    }
+    alarmStarted = false;
+  }
+  
+  // 실시간 환전신청 확인 변수
+  let currentPendingCount = {{ pending_requests_count|default(0) }};
+  let checkInterval = null;
+  let alarmStarted = false;
+  
+  // 환전신청 개수 확인 함수
+  async function checkPendingRequests() {
+    try {
+      const response = await fetch('/api/pending_requests_count');
+      const data = await response.json();
+      const newCount = data.count;
+      
+      // 개수가 변경되었을 때만 처리
+      if (newCount !== currentPendingCount) {
+        const previousCount = currentPendingCount;
+        currentPendingCount = newCount;
+        updateExchangeButton(newCount);
+        
+        // 새로운 환전신청이 생겼을 때 알림음 시작
+        if (newCount > 0 && previousCount === 0) {
+          startAlarm();
+        }
+        // 환전신청이 모두 처리되었을 때 알림음 정지
+        else if (newCount === 0 && previousCount > 0) {
+          stopAlarm();
+        }
+      }
+    } catch (error) {
+      console.log('환전신청 개수 확인 실패:', error);
+    }
+  }
+  
+  // 환전신청 버튼 업데이트 함수
+  function updateExchangeButton(count) {
+    const exchangeBtn = document.getElementById('exchangeBtn');
+    if (exchangeBtn) {
+      const requestCountSpan = exchangeBtn.querySelector('.request-count');
+      
+      if (count > 0) {
+        exchangeBtn.classList.add('blink');
+        if (requestCountSpan) {
+          requestCountSpan.textContent = `(${count})`;
+        } else {
+          const span = document.createElement('span');
+          span.className = 'request-count';
+          span.textContent = `(${count})`;
+          exchangeBtn.appendChild(span);
+        }
+      } else {
+        exchangeBtn.classList.remove('blink');
+        if (requestCountSpan) {
+          requestCountSpan.remove();
+        }
+      }
+    }
+  }
+  
+  // 페이지 로드 시 알림음 설정
+  document.addEventListener('DOMContentLoaded', function() {
+    // 알림음 파일 로드 (백업용)
+    console.log('알림음 파일 로드 시작...');
+    try {
+      alarmAudio = new Audio('/static/mp3/alarm.mp3');
+      alarmAudio.addEventListener('loadstart', () => console.log('알림음 로드 시작'));
+      alarmAudio.addEventListener('canplay', () => console.log('알림음 재생 가능'));
+      alarmAudio.addEventListener('error', (e) => console.log('알림음 로드 오류:', e));
+      alarmAudio.load();
+    } catch (e) {
+      console.log('알림음 파일 로드 실패:', e);
+    }
+    
+    // 브라우저 알림 권한 요청
+    if (window.Notification && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+    
+    // 사용자 상호작용 후 알림음 활성화
+    function enableAlarm() {
+      console.log('알림음 활성화됨');
+      // AudioContext를 사용자 상호작용으로 활성화
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      } catch (e) {
+        console.log('AudioContext 활성화 실패:', e);
+      }
+    }
+    
+    // 페이지 클릭 시 알림음 활성화
+    document.addEventListener('click', enableAlarm, { once: true });
+    document.addEventListener('keydown', enableAlarm, { once: true });
+    
+    // 환전신청이 있을 때 알림음 시작
+    {% if current_user.username == 'admin' and pending_requests_count > 0 %}
+      // 3초 후부터 알림음 시작 (페이지 로드 후)
+      setTimeout(function() {
+        startAlarm();
+      }, 3000);
+    {% endif %}
+    
+    // 실시간 환전신청 확인 시작 (10초마다)
+    {% if current_user.username == 'admin' %}
+      checkInterval = setInterval(checkPendingRequests, 10000);
+    {% endif %}
+  });
+  
+  // 알림음 테스트 함수
+  function testAlarm() {
+    console.log('알림음 테스트 시작...');
+    playAlarm();
+  }
+  
+  // 페이지를 떠날 때 인터벌 정리
+  window.addEventListener('beforeunload', function() {
+    if (checkInterval) {
+      clearInterval(checkInterval);
+    }
+    if (alarmInterval) {
+      clearInterval(alarmInterval);
+    }
+  });
+</script>
+</body>
+</html>
