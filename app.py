@@ -7,7 +7,6 @@ from routes.admin import admin_bp
 from sqlalchemy import inspect, text
 from flask_login import LoginManager, current_user, login_required
 import io
-import pandas as pd
 import math
 from flask_migrate import Migrate
 import schedule
@@ -944,18 +943,22 @@ def index():
         has_next = page < max_page
 
         if 'download' in request.args:
-            output = io.BytesIO()
-            df = pd.DataFrame([{
-                '시간': t.timestamp, '구분': t.type,
-                '금액': t.amount, '예상잔액': expected_balances.get(t.id, 0), 
-                '알림잔액': t.notification_balance if t.notification_balance else '-',
-                '오차': (expected_balances.get(t.id, 0) - (t.notification_balance or 0)) if t.notification_balance else '-',
-                '보낸사람': t.sender
-            } for t in all_transactions])
-            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                df.to_excel(writer, index=False, sheet_name='거래내역')
+            # CSV 형식으로 다운로드 (pandas 대신)
+            output = io.StringIO()
+            output.write('시간,구분,금액,예상잔액,알림잔액,오차,보낸사람\n')
+            for t in all_transactions:
+                expected_balance = expected_balances.get(t.id, 0)
+                notification_balance = t.notification_balance or '-'
+                error = (expected_balance - (t.notification_balance or 0)) if t.notification_balance else '-'
+                output.write(f'{t.timestamp},{t.type},{t.amount},{expected_balance},{notification_balance},{error},{t.sender}\n')
+            
             output.seek(0)
-            return send_file(output, download_name="거래내역.xlsx", as_attachment=True)
+            return send_file(
+                io.BytesIO(output.getvalue().encode('utf-8-sig')), 
+                download_name="거래내역.csv", 
+                as_attachment=True,
+                mimetype='text/csv'
+            )
     else:
         filtered_fee = 0
         max_page = 1
